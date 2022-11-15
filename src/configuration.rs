@@ -26,4 +26,6 @@ impl Configuration {
 #[derive(Deserialize)]
 pub struct Gandi {
     pub api_key: String,
+    pub fully_qualified_domain_name: String,
+    pub subdomain: String,
 }
