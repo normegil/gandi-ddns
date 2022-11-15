@@ -4,6 +4,8 @@ use serde::Deserialize;
 
 #[derive(Deserialize)]
 pub struct Configuration {
+    ip_discovery_url: Option<String>,
+    pub gandi: Gandi
 }
 
 impl Configuration {
@@ -12,4 +14,16 @@ impl Configuration {
         let cfg: Configuration = toml::from_str(&content)?;
         Ok(cfg)
     }
+
+    pub fn ip_discovery_url(&self) -> &str {
+        match self.ip_discovery_url.as_ref() {
+            None => return "https://ifconfig.me/ip",   
+            Some(url) => return url, 
+        }
+    }
+}
+
+#[derive(Deserialize)]
+pub struct Gandi {
+    pub api_key: String,
 }
