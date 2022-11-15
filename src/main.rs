@@ -1,3 +1,12 @@
+use std::fs::File;
+
+use configuration::Configuration;
+
+mod configuration;
+
 fn main() {
-    println!("Hello, world!");
+    let cfg = match Configuration::new("cfg.toml") {
+        Err(e) => panic!("{}", e),
+        Ok(cfg) => cfg,
+    };   
 }
