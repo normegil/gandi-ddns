@@ -1,9 +1,7 @@
-use std::error::Error;
-
 use configuration::Configuration;
-use serde::Serialize;
 
 mod configuration;
+mod ip;
 
 fn main() {
     let cfg = match Configuration::new("cfg.toml") {
@@ -13,7 +11,7 @@ fn main() {
 
     println!("Configuration loaded");
 
-    let ip = match get_ip(cfg.ip_discovery_url()) {
+    let ip = match ip::get(cfg.ip_discovery_url()) {
         Err(e) => panic!("{}", e),
         Ok(ip) => ip,
     };
@@ -22,45 +20,7 @@ fn main() {
 
     println!("API Key: {}", cfg.gandi.api_key);
 
-    if let Some(err) = update_ip(&cfg, &ip) {
+    if let Some(err) = ip::update(&cfg, &ip) {
         panic!("{}", err);
     }
-}
-
-#[derive(Serialize)]
-struct UpdateBody {
-    rrset_values: Vec<String>,
-}
-
-fn get_ip(discovery_url: &str) -> Result<String, Box<dyn Error>> {
-    let ip = reqwest::blocking::get(discovery_url)?
-        .text()?;
-    Ok(ip)
-}
-
-fn update_ip(cfg: &Configuration, new_ip: &str) -> Option<Box<dyn Error>> {
-    let client = reqwest::blocking::Client::new();
-
-    let mut value: Vec<String> = Vec::new();
-    value.push(new_ip.to_string());
-    let body = UpdateBody { rrset_values: value };
-
-    let body = match serde_json::to_string(&body) {
-        Err(e) => return Some(Box::new(e)),
-        Ok(body) => body,
-    };
-
-    let url = format!("https://api.gandi.net/v5/livedns/domains/{fqdn}/records/{subdomain}/A", fqdn=cfg.gandi.fully_qualified_domain_name, subdomain=cfg.gandi.subdomain);
-    println!("URL: {}", url);
-    let request = client.put(url)
-        .header("Authorization", format!("Apikey {}", cfg.gandi.api_key))
-        .body(body);
-
-    let resp = match request.send() {
-        Err(e) => return Some(Box::new(e)),
-        Ok(resp) => resp,
-    };
-
-    println!("{}", resp.status());
-    None
 }
