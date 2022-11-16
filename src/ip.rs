@@ -10,8 +10,7 @@ struct UpdateBody {
 }
 
 pub fn get(discovery_url: &str) -> Result<String, Box<dyn Error>> {
-    let ip = reqwest::blocking::get(discovery_url)?
-        .text()?;
+    let ip = reqwest::blocking::get(discovery_url)?.text()?;
     Ok(ip)
 }
 
@@ -20,16 +19,23 @@ pub fn update(cfg: &Configuration, new_ip: &str) -> Option<Box<dyn Error>> {
 
     let mut value: Vec<String> = Vec::new();
     value.push(new_ip.to_string());
-    let body = UpdateBody { rrset_values: value };
+    let body = UpdateBody {
+        rrset_values: value,
+    };
 
     let body = match serde_json::to_string(&body) {
         Err(e) => return Some(Box::new(e)),
         Ok(body) => body,
     };
 
-    let url = format!("https://api.gandi.net/v5/livedns/domains/{fqdn}/records/{subdomain}/A", fqdn=cfg.gandi.fully_qualified_domain_name, subdomain=cfg.gandi.subdomain);
+    let url = format!(
+        "https://api.gandi.net/v5/livedns/domains/{fqdn}/records/{subdomain}/A",
+        fqdn = cfg.gandi.fully_qualified_domain_name,
+        subdomain = cfg.gandi.subdomain
+    );
     println!("URL: {}", url);
-    let request = client.put(url)
+    let request = client
+        .put(url)
         .header("Authorization", format!("Apikey {}", cfg.gandi.api_key))
         .body(body);
 

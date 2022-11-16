@@ -1,11 +1,11 @@
-use std::{io, fs};
+use std::{fs, io};
 
 use serde::Deserialize;
 
 #[derive(Deserialize)]
 pub struct Configuration {
     ip_discovery_url: Option<String>,
-    pub gandi: Gandi
+    pub gandi: Gandi,
 }
 
 impl Configuration {
@@ -17,8 +17,8 @@ impl Configuration {
 
     pub fn ip_discovery_url(&self) -> &str {
         match self.ip_discovery_url.as_ref() {
-            None => return "https://ifconfig.me/ip",   
-            Some(url) => return url, 
+            None => return "https://ifconfig.me/ip",
+            Some(url) => return url,
         }
     }
 }
