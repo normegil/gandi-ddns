@@ -17,8 +17,7 @@ pub fn get(discovery_url: &str) -> Result<String, Box<dyn Error>> {
 pub fn update(cfg: &Configuration, new_ip: &str) -> Option<Box<dyn Error>> {
     let client = reqwest::blocking::Client::new();
 
-    let mut value: Vec<String> = Vec::new();
-    value.push(new_ip.to_string());
+    let value: Vec<String> = vec![new_ip.to_string()];
     let body = UpdateBody {
         rrset_values: value,
     };

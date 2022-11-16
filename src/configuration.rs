@@ -17,8 +17,8 @@ impl Configuration {
 
     pub fn ip_discovery_url(&self) -> &str {
         match self.ip_discovery_url.as_ref() {
-            None => return "https://ifconfig.me/ip",
-            Some(url) => return url,
+            None => "https://ifconfig.me/ip",
+            Some(url) => url,
         }
     }
 }
