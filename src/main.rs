@@ -18,8 +18,6 @@ fn main() {
 
     println!("Detected IP: {}", ip);
 
-    println!("API Key: {}", cfg.gandi.api_key);
-
     if let Some(err) = ip::update(&cfg, &ip) {
         panic!("{}", err);
     }
