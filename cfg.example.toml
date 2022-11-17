@@ -1,0 +1,10 @@
+# Optionnal: Should return the IP as direct text
+#ip_discovery_url = "https://ifconfig.me/ip"
+
+[Gandi]
+# Gandi API Keys - Can be obtained here: https://account.gandi.net/, 'Security' section
+api_key = ""
+# Fully Qualified Domain Name for the domain to update - Don't end it with a dot
+fully_qualified_domain_name = "example.com"
+# Subdomain to update - The record should be a of type 'A' (IPv4)
+subdomain = "ddns"
