@@ -20,7 +20,7 @@ impl Configuration {
             None => default_path,
         };
 
-        println!("Configuration: {}", conf.as_os_str().to_str().or_else("Path could not be printed"));
+        println!("Configuration: {}", conf.as_os_str().to_str().unwrap_or_else(|| "Path could not be printed"));
 
         let content = fs::read_to_string(&conf)?;
         let cfg: Configuration = toml::from_str(&content)?;
