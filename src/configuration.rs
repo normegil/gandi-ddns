@@ -1,4 +1,4 @@
-use std::{fs, io};
+use std::{fs, io, path::PathBuf, str::FromStr};
 
 use serde::Deserialize;
 
@@ -10,7 +10,19 @@ pub struct Configuration {
 
 impl Configuration {
     pub fn new(path: &str) -> io::Result<Self> {
-        let content = fs::read_to_string(&path)?;
+        let default_path = PathBuf::from_str("./")?.join(path);
+        let conf = match dirs::config_dir() {
+            Some(dir) => if dir.join(path).exists() {
+                dir.join(path)
+            } else {
+                default_path
+            },
+            None => default_path,
+        };
+
+        println!("Configuration: {conf}");
+
+        let content = fs::read_to_string(&conf)?;
         let cfg: Configuration = toml::from_str(&content)?;
         Ok(cfg)
     }
