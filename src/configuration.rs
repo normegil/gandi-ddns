@@ -12,15 +12,22 @@ impl Configuration {
     pub fn new(path: &str) -> io::Result<Self> {
         let default_path = PathBuf::from_str("./").unwrap().join(path);
         let conf = match dirs::config_dir() {
-            Some(dir) => if dir.join(path).exists() {
-                dir.join(path)
-            } else {
-                default_path
-            },
+            Some(dir) => {
+                if dir.join(path).exists() {
+                    dir.join(path)
+                } else {
+                    default_path
+                }
+            }
             None => default_path,
         };
 
-        println!("Configuration: {}", conf.as_os_str().to_str().unwrap_or_else(|| "Path could not be printed"));
+        println!(
+            "Configuration: {}",
+            conf.as_os_str()
+                .to_str()
+                .unwrap_or_else(|| "Path could not be printed")
+        );
 
         let content = fs::read_to_string(&conf)?;
         let cfg: Configuration = toml::from_str(&content)?;
