@@ -13,6 +13,12 @@ impl Configuration {
         let default_path = PathBuf::from_str("./").unwrap().join(path);
         let conf = match dirs::config_dir() {
             Some(dir) => {
+                println!(
+                    "Checking: {}",
+                    dir.as_os_str()
+                        .to_str()
+                        .unwrap_or_else(|| "Path could not be printed")
+                );
                 if dir.join(path).exists() {
                     dir.join(path)
                 } else {
