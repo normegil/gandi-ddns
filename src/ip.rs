@@ -27,8 +27,14 @@ pub fn update(cfg: &Configuration, new_ip: &str) -> Option<Box<dyn Error>> {
         Ok(body) => body,
     };
 
+    let record_type = if new_ip.contains(":") {
+        "AAAA"
+    } else {
+        "A"
+    };
+
     let url = format!(
-        "https://api.gandi.net/v5/livedns/domains/{fqdn}/records/{subdomain}/A",
+        "https://api.gandi.net/v5/livedns/domains/{fqdn}/records/{subdomain}/{record_type}",
         fqdn = cfg.gandi.fully_qualified_domain_name,
         subdomain = cfg.gandi.subdomain
     );
