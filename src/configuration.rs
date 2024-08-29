@@ -10,7 +10,7 @@ pub struct Configuration {
 
 impl Configuration {
     pub fn new(path: &str) -> io::Result<Self> {
-        let default_path = PathBuf::from_str("./").join(path);
+        let default_path = PathBuf::from_str("./").unwrap().join(path);
         let conf = match dirs::config_dir() {
             Some(dir) => if dir.join(path).exists() {
                 dir.join(path)
